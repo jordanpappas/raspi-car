@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>PiCar</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<link rel="stylesheet" type="text/css" href="style.css">
+		<link rel="stylesheet" href="powerange.css" />
+		<script src="powerange.js"></script>
+	</head>
+
+	<body>
+		<div id="wrapper">
+			<div id="group-top">
+				<div class="slide-wrap">
+					<input class="speed" type="text"/>
+				</div>
+			</div>
+
+			<div id="group-bottom">
+				<button class="btn" id="forward">^</button>
+				<button class="btn" id="reverse">v</button>
+				<button class="btn" id="left"><</button>
+				<button class="btn" id="right">></button>
+			</div>
+		</div>
+	</body>
+
+	<script type="text/javascript">
+		var speed = document.querySelector('.speed');
+		var init = new Powerange(speed, {min:50, max:100, start:75, hideRange:true});
+	</script>
+
+	<script src="https://cdn.socket.io/socket.io-1.3.4.js"></script>
+	<script src="client.js"></script>
+</html>

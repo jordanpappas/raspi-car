@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>PiServer 2</title>
+  
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+  <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+</head>
+<body>
+  
+  <div class="jumbotron" style="background-color: teal;color:white;">
+    <center>
+    
+    <h1>PiServer</h1>
+    <h2>Control your Internet-of-Things, things</h2>
+
+    <p style="color: black;">This server lets you control an <a style="color: white;" href="http://en.wikipedia.org/wiki/Internet_of_Things" target="_blank">IoT</a> project based on RaspberryPi, Arduino, etc. <br> Use a controler of your own design, or one of the premade controlers.</p>
+    </center>
+  </div>
+  
+  <div class="container-fluid">
+
+    <h1>Introduction</h1>
+    <p>Mobile projects have changing ip's and are difficult to directly connect to. This server is a home base for embedded projects and their corresponding controlers to pass messages to each other.</p>
+
+    <p>The server is a simple message passing server based on <a href="http://socket.io" target="_blank">socket.io</a>. Socket.io is built on JavaScript, but client libraries exist for many desired languages. A RaspberryPi's GPIO pins can be programmed, together with the Socket.io library, to control the project from anywhere.</p> 
+    <center><img src="images/diagram.png"></center>
+    <br><hr><br>
+    
+    <h1>Requirements</h1>
+    <p>You need a socket.io-client library and gpio library for your desired language. Connect to the server in the usual (socket.io) way, sync to a channel, and send messages. Then you can respond to the messages in any way you desire. See the examples for a more straight forward explanation.</p>
+
+    <br><br>
+
+    <center><span style="color: red; width: 50px; height: 50px; border-radius: 100px; border: 1px dotted red;" class="glyphicon glyphicon-warning-sign"></span></center>
+    <h4><center><b>You must specify (in the connection options) the option {'transports': ["websocket"]} in order to use the new server.</b></h4><br></center>
+    <center><p>The reason for this is that the server now takes advantage of <a href="https://nodejs.org/api/cluster.html" target="_blank">cluster</a>, and only websockets are suitable for this setup. </p></center>
+
+    <br><hr><br>
+    
+    <h1>API</h1>
+    <h3>Connecting to the server:</h3>
+    
+    <li><h4>var socket = io.connect('http://picontrol2.herokuapp.com/control', { 'transports': ['websocket'] });</h4></li>
+    <p>Connect to the control server and use the socket.io events. Consult your desired socket.io-client api for the proper method of connecting to a server with the transports: websocket option.</p>
+
+    <h3>Socket.io events:</h3>
+
+    <li><h4>'sync', id</h4></li>
+    <p>Connects the emmiting client to a room with the specified string 'id'.</p>
+
+    <li><h4>'send', id, message, [data]</h4></li>
+    <p>Tells the server to emit an event with the name supplied by 'message' to all clients in the room specified by the string 'id'. You must be sync'd to the room you are attempting to send to, and may send an optional data string, like in the case of an error message.</p>
+
+    <li><h4>'err', message</h4></li>
+    <p>Emits an error message to all clients in the room in which the error occured. The server will emit an error when it is used incorrectly. Clients can emit an error with 'send, id, err, "custom error message"'.</p>
+
+    <br><hr><br>
+    
+    <h1>Example</h1>
+    <img id="example" src="images/example.jpg">
+    
+    <br><center><p id="note">*These <i>socket.on</i> are equal. One declares an anonymous function inline, while the other passes in a named function.</p></center>
+    
+    <br><hr><br>
+
+    <div class="row">
+        
+      <div class="col-lg-6 col-md-6 text-center led">
+        <a href="led.html" target="_blank">
+          <img src="images/led.jpg" alt="">
+          <h1><i>LED CONTROLLER</i></h1>
+        </a>
+        <h5>Send 'led' events from your browser</h5>
+      </div>
+      
+     <!--  <div class="col-lg-6 col-md-6 text-center debug">
+        <a href="debug.html" target="_blank">
+          <img src="images/terminal.png" alt="">
+          <h1><i>DEBUG CONTROLLER</i></h1>
+        </a>
+        <h5>Type and send any event you want</h5>
+      </div> -->
+
+    </div>
+  </div>
+
+  <style type="text/css">
+    .led,
+    .debug {
+        padding-top: 20px;
+        padding-bottom: 20px;
+    }
+
+    .led img,
+    .debug img {
+        width: 100px;
+        opacity: .7;
+    }
+
+    span.glyphicon {
+      margin: 0 auto;
+      padding-top: 10px;
+      font-size: 1.8em;
+    }
+
+    h4 {
+      margin: 10px;
+    }
+
+    h3 {
+      margin-top: 20px;
+    }
+
+    #example {
+      width: 300px;
+    }
+
+    #note {
+      font-size: 0.8em;
+    }
+  </style>
+</body>
+</html>

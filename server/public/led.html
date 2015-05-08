@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>LED Controller</title>
+  </head>
+
+  <body>
+    <button id="btn">
+      <i>tap to emit 'led' events</i>
+      <p style="font-size: .4em; position: absolute; bottom: 0; width: 100%; text-align: center;">colors change when 'led' is emitted</p>
+    </button>
+  </body>
+
+  <script src="https://cdn.socket.io/socket.io-1.2.1.js"></script>
+
+  <style type="text/css">
+    html,
+    body {
+      /* mobile highlighting fix */
+      -webkit-touch-callout:none;
+      -webkit-user-select:none;
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    #btn {
+      height: 100%;
+      width: 100%;
+      border: none;
+      color: white; 
+      font-family: Helvetica; 
+      font-size: 1.5em;
+      cursor: pointer; /* mobile bug fix */
+      padding: 0;
+    }
+
+    p {
+      size: 1em;
+    }
+  </style>
+
+
+  <script type="text/javascript">
+
+    var btn = document.getElementById('btn');
+    var txt = document.getElementById('body');
+
+    function getRandomColor() {
+      var letters = '0123456789ABCDEF'.split('');
+      var color = '#';
+      for (var i = 0; i < 6; i++ ) { 
+        color += letters[Math.floor(Math.random() * 16)] 
+      }
+      return color;
+    }
+
+    function toggleLed() {
+      btn.style.backgroundColor = getRandomColor();
+      btn.style.color = getRandomColor();
+    }
+
+    toggleLed();
+
+    var ID = '';
+    while (ID == '' || (ID != null && ID.length > 25)) {
+      ID = window.prompt('Enter Your pi\'s channel ID');
+    }
+
+    btn.addEventListener('mousedown', function() {
+      socket.emit('send', ID, 'led');
+    });
+
+    btn.addEventListener('touch', function() {
+      socket.emit('send', ID, 'led');
+    });
+
+    var socket = io.connect(
+      'https://picontrol2.herokuapp.com/control',
+      { 'transports': ['websocket'] }
+    );
+    
+    socket.on('connect', function(data) {
+      socket.emit('sync', ID);
+    });
+
+    socket.on('led', toggleLed);
+
+    socket.on('err', function(msg) {
+      alert(msg);
+    });
+
+    /* mobile prevent scroll */
+    document.body.addEventListener('touchmove', function(e){ e.preventDefault(); });
+
+  </script>
+
+</html>
